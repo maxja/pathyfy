@@ -1,0 +1,30 @@
+{
+  "name": "obj-to-flat",
+  "version": "1.0.0",
+  "author": "fpavlik@mail.ru",
+  "description": "Convert object to flat array",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fpavlik/obj-to-flat.git"
+  },
+  "keywords": [
+    "object",
+    "convert",
+    "flat",
+    "array"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fpavlik/obj-to-flat/issues"
+  },
+  "homepage": "https://github.com/fpavlik/obj-to-flat#readme",
+  "dependencies": {
+    "chai": "^4.3.7",
+    "lodash": "^4.17.21",
+    "mocha": "^10.2.0"
+  }
+}
