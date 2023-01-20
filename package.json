@@ -4,8 +4,9 @@
   "author": "fpavlik@mail.ru",
   "description": "Convert object to flat array",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha **/*.spec.js"
   },
   "repository": {
     "type": "git",
@@ -24,7 +25,6 @@
   "homepage": "https://github.com/fpavlik/obj-to-flat#readme",
   "dependencies": {
     "chai": "^4.3.7",
-    "lodash": "^4.17.21",
     "mocha": "^10.2.0"
   }
 }
