@@ -12,6 +12,7 @@ export function* traverse(obj, unpackArray = false) {
   if (obj instanceof Array && !unpackArray) {
     return null;
   }
+  const objectRefRegistry = new WeakSet([obj]);
   const queue = Object.entries(obj);
   for (; queue.length > 0;) {
     const [key, value] = queue.shift();
@@ -22,7 +23,13 @@ export function* traverse(obj, unpackArray = false) {
       yield [key, value];
       continue;
     }
-    Array.prototype.push.apply(
+    if (objectRefRegistry.has(value)) {
+      yield [key, undefined];
+      continue;
+    }
+    objectRefRegistry.add(value);
+    Reflect.apply(
+      Array.prototype.push,
       queue,
       Object.entries(value).map(([k, v]) => ([[key, k].join('.'), v])),
     );
