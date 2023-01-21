@@ -25,9 +25,9 @@ describe('Split object into array of key:value pairs', () => {
           d: 2,
           g: {
             k: null,
-            l: ['foo', 'bar']
+            l: ['foo', 'bar'],
           },
-          o: 'foo'
+          o: 'foo',
         },
         m: 'bar',
         e: [123, 123],

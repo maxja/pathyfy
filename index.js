@@ -12,29 +12,30 @@ export function* traverse(obj, unpackArray = false) {
   if (obj instanceof Array && !unpackArray) {
     return null;
   }
-  const objectRefRegistry = new WeakSet([obj]);
-  const queue = Object.entries(obj);
-  for (let idx = 0; queue.length > 0; idx++) {
-    const [key, value, i] = queue.shift();
-    let ids = i ?? [];
-    ids.push(idx);
+  const refRegistry = new WeakSet([obj]);
+  const queue = Object.entries(obj).map(
+    ([k, v], i) => ([k, v, [i]])
+  );
+  for (; queue.length > 0;) {
+    const [key, value, ids] = queue.shift();
     if (
-      typeof value !== 'object' || value === null
+      typeof value !== 'object'
+      || value === null
       || (value instanceof Array && !unpackArray)
     ) {
       yield [[key, value], ids];
       continue;
     }
-    if (objectRefRegistry.has(value)) {
+    if (refRegistry.has(value)) {
       yield [[key, undefined], ids];
       continue;
     }
-    objectRefRegistry.add(value);
+    refRegistry.add(value);
     Reflect.apply(
       Array.prototype.push,
       queue,
       Object.entries(value).map(
-        ([k, v]) => ([[key, k].join('.'), v, ids])
+        ([k, v], i) => ([[key, k].join('.'), v, ids.concat([i])])
       ),
     );
   }
@@ -45,6 +46,12 @@ export function* traverse(obj, unpackArray = false) {
  * Get Flat Object
  * @param {object} obj
  */
-export function getFlatObject(obj) {
-  return [...traverse(obj)].map((kv) => Object.fromEntries([kv]));
+export function getFlatObject(obj, preserveOrder = true) {
+  let res = [...traverse(obj)];
+  if (preserveOrder) {
+    res = res.sort(([, l], [, r]) => l > r ? +1 : r > l ? -1 : 0);
+  }
+  return res.map(
+    ([kv,]) => Object.fromEntries([kv])
+  );
 }

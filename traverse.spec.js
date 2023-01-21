@@ -7,27 +7,27 @@ describe('Test traverse function', () => {
     const testCases = [
       [
         { a: 'b' },
-        [['a', 'b']],
+        [[['a', 'b'], [0]]],
         'unpack single key:value object'
       ],
       [
         { a: 'b', c: 'd' },
-        [['a', 'b'], ['c', 'd']],
+        [[['a', 'b'], [0]], [['c', 'd'], [1]]],
         'unpack double key:value object'
       ],
       [
         { a: { b: 'c' }, d: { e: 'f' } },
-        [['a.b', 'c'], ['d.e', 'f']],
+        [[['a.b', 'c'], [0, 0]], [['d.e', 'f'], [1, 0]]],
         'unpack nested key:value object'
       ],
       [
         { a: { b: ['c', 'd', 'e'] } },
-        [['a.b', ['c', 'd', 'e']]],
+        [[['a.b', ['c', 'd', 'e']], [0, 0]]],
         'preserve array as whole value while unpacking'
       ],
       [
         { a: { b: null } },
-        [['a.b', null]],
+        [[['a.b', null], [0, 0]]],
         'preserve null as value while unpacking'
       ],
     ];
@@ -38,6 +38,7 @@ describe('Test traverse function', () => {
       });
     }
   });
+
   describe('Fail tests', () => {
     const testCases = [
       [
@@ -58,6 +59,7 @@ describe('Test traverse function', () => {
       });
     }
   });
+
   describe('Test on circular referencing', () => {
     var selfReferenced = {
       a: {
@@ -72,8 +74,8 @@ describe('Test traverse function', () => {
       [
         selfReferenced,
         [
-          ['a.b', 'c'],
-          ['a.d.e', undefined],
+          [['a.b', 'c'], [0, 0]],
+          [['a.d.e', undefined], [0, 1, 0]],
         ],
         'traverse should be prevented on circular referenced objects'
       ]
