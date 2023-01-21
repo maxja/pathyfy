@@ -14,24 +14,28 @@ export function* traverse(obj, unpackArray = false) {
   }
   const objectRefRegistry = new WeakSet([obj]);
   const queue = Object.entries(obj);
-  for (; queue.length > 0;) {
-    const [key, value] = queue.shift();
+  for (let idx = 0; queue.length > 0; idx++) {
+    const [key, value, i] = queue.shift();
+    let ids = i ?? [];
+    ids.push(idx);
     if (
       typeof value !== 'object' || value === null
       || (value instanceof Array && !unpackArray)
     ) {
-      yield [key, value];
+      yield [[key, value], ids];
       continue;
     }
     if (objectRefRegistry.has(value)) {
-      yield [key, undefined];
+      yield [[key, undefined], ids];
       continue;
     }
     objectRefRegistry.add(value);
     Reflect.apply(
       Array.prototype.push,
       queue,
-      Object.entries(value).map(([k, v]) => ([[key, k].join('.'), v])),
+      Object.entries(value).map(
+        ([k, v]) => ([[key, k].join('.'), v, ids])
+      ),
     );
   }
   return null;
